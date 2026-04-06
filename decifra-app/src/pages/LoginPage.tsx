@@ -1,7 +1,7 @@
 import { useState, useRef, type FormEvent, type KeyboardEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { Mail, Lock, ArrowRight, Loader2, ShieldCheck, ArrowLeft, Eye, EyeOff } from 'lucide-react'
+import { Mail, Lock, ArrowRight, Loader2, ShieldCheck, ArrowLeft, Eye, EyeOff, User } from 'lucide-react'
 
 type View = 'login' | 'signup' | 'verify-signup' | 'forgot' | 'verify-reset' | 'new-password'
 
@@ -10,6 +10,7 @@ const OTP_LENGTH = 8
 export function LoginPage() {
   const [view, setView] = useState<View>('login')
   const [email, setEmail] = useState('')
+  const [fullName, setFullName] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -26,6 +27,7 @@ export function LoginPage() {
     setSuccess('')
     setPassword('')
     setConfirmPassword('')
+    setFullName('')
     setOtp(Array(OTP_LENGTH).fill(''))
     setShowPassword(false)
   }
@@ -54,6 +56,10 @@ export function LoginPage() {
     e.preventDefault()
     setError('')
 
+    if (!fullName.trim()) {
+      setError('Preencha seu nome completo.')
+      return
+    }
     if (password.length < 6) {
       setError('A senha deve ter pelo menos 6 caracteres.')
       return
@@ -64,7 +70,7 @@ export function LoginPage() {
     }
 
     setLoading(true)
-    const { error } = await signUp(email, password)
+    const { error } = await signUp(email, password, fullName.trim())
     if (error) {
       setError(error.message)
     } else {
@@ -392,6 +398,17 @@ export function LoginPage() {
           {view === 'signup' && (
             <>
               <form onSubmit={handleSignUp}>
+                <div className="relative mb-4">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Nome completo"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    required
+                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all text-sm"
+                  />
+                </div>
                 {emailInput()}
                 {passwordInput('Crie uma senha (mín. 6 caracteres)', password, setPassword)}
                 {passwordInput('Confirme sua senha', confirmPassword, setConfirmPassword)}
