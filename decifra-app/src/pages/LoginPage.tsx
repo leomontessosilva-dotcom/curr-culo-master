@@ -5,7 +5,7 @@ import { Mail, Lock, ArrowRight, Loader2, ShieldCheck, ArrowLeft, Eye, EyeOff } 
 
 type View = 'login' | 'signup' | 'verify-signup' | 'forgot' | 'verify-reset' | 'new-password'
 
-const OTP_LENGTH = 8
+const OTP_LENGTH = 6
 
 export function LoginPage() {
   const [view, setView] = useState<View>('login')
