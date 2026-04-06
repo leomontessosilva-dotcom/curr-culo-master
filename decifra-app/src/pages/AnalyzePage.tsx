@@ -20,16 +20,22 @@ export function AnalyzePage() {
   const [loading, setLoading] = useState(false)
   const [extracting, setExtracting] = useState(false)
   const [dragOver, setDragOver] = useState(false)
+  const [extractError, setExtractError] = useState('')
 
   const handleFile = useCallback(async (f: File) => {
     if (f.type !== 'application/pdf') return
     setFile(f)
     setExtracting(true)
+    setExtractError('')
     try {
       const text = await extractTextFromPdf(f)
       setResumeText(text)
-    } catch {
+      if (!text.trim()) {
+        setExtractError('Não foi possível extrair texto deste PDF. Ele pode ser uma imagem escaneada.')
+      }
+    } catch (err) {
       setResumeText('')
+      setExtractError(`Erro ao ler o PDF: ${err instanceof Error ? err.message : 'erro desconhecido'}`)
     }
     setExtracting(false)
   }, [])
@@ -121,23 +127,26 @@ export function AnalyzePage() {
           </label>
 
           {file ? (
-            <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
-              <FileText className="w-5 h-5 text-emerald-600 shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-emerald-800 truncate">{file.name}</p>
-                <p className="text-xs text-emerald-600">
-                  {extracting ? 'Extraindo texto...' : `${resumeText.length} caracteres extraídos`}
-                </p>
+            <div>
+              <div className={`flex items-center gap-3 ${extractError ? 'bg-rose-50 border-rose-200' : 'bg-emerald-50 border-emerald-200'} border rounded-xl px-4 py-3`}>
+                <FileText className={`w-5 h-5 ${extractError ? 'text-rose-600' : 'text-emerald-600'} shrink-0`} />
+                <div className="flex-1 min-w-0">
+                  <p className={`text-sm font-medium ${extractError ? 'text-rose-800' : 'text-emerald-800'} truncate`}>{file.name}</p>
+                  <p className={`text-xs ${extractError ? 'text-rose-600' : 'text-emerald-600'}`}>
+                    {extracting ? 'Extraindo texto...' : extractError ? extractError : `${resumeText.length} caracteres extraídos`}
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    setFile(null)
+                    setResumeText('')
+                    setExtractError('')
+                  }}
+                  className={`${extractError ? 'text-rose-500 hover:text-rose-700' : 'text-emerald-500 hover:text-emerald-700'} transition-colors cursor-pointer`}
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
-              <button
-                onClick={() => {
-                  setFile(null)
-                  setResumeText('')
-                }}
-                className="text-emerald-500 hover:text-emerald-700 transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
             </div>
           ) : (
             <div
