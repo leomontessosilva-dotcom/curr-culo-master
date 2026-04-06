@@ -6,8 +6,11 @@ interface AuthContextType {
   user: User | null
   session: Session | null
   loading: boolean
-  signInWithOtp: (email: string) => Promise<{ error: Error | null }>
-  verifyOtp: (email: string, token: string) => Promise<{ error: Error | null }>
+  signUp: (email: string, password: string) => Promise<{ error: Error | null }>
+  signIn: (email: string, password: string) => Promise<{ error: Error | null }>
+  verifyOtp: (email: string, token: string, type: 'signup' | 'recovery') => Promise<{ error: Error | null }>
+  resetPasswordRequest: (email: string) => Promise<{ error: Error | null }>
+  updatePassword: (newPassword: string) => Promise<{ error: Error | null }>
   signOut: () => Promise<void>
 }
 
@@ -34,17 +37,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe()
   }, [])
 
-  const signInWithOtp = async (email: string) => {
-    const { error } = await supabase.auth.signInWithOtp({ email })
+  const signUp = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signUp({ email, password })
     return { error: error as Error | null }
   }
 
-  const verifyOtp = async (email: string, token: string) => {
-    const { error } = await supabase.auth.verifyOtp({
-      email,
-      token,
-      type: 'email',
-    })
+  const signIn = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    return { error: error as Error | null }
+  }
+
+  const verifyOtp = async (email: string, token: string, type: 'signup' | 'recovery') => {
+    const { error } = await supabase.auth.verifyOtp({ email, token, type })
+    return { error: error as Error | null }
+  }
+
+  const resetPasswordRequest = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email)
+    return { error: error as Error | null }
+  }
+
+  const updatePassword = async (newPassword: string) => {
+    const { error } = await supabase.auth.updateUser({ password: newPassword })
     return { error: error as Error | null }
   }
 
@@ -53,7 +67,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signInWithOtp, verifyOtp, signOut }}>
+    <AuthContext.Provider value={{
+      user, session, loading,
+      signUp, signIn, verifyOtp, resetPasswordRequest, updatePassword, signOut,
+    }}>
       {children}
     </AuthContext.Provider>
   )

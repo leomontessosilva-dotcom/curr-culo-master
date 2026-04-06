@@ -1,71 +1,168 @@
 import { useState, useRef, type FormEvent, type KeyboardEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { Mail, ArrowRight, Loader2, ShieldCheck } from 'lucide-react'
+import { Mail, Lock, ArrowRight, Loader2, ShieldCheck, ArrowLeft, Eye, EyeOff } from 'lucide-react'
+
+type View = 'login' | 'signup' | 'verify-signup' | 'forgot' | 'verify-reset' | 'new-password'
+
+const OTP_LENGTH = 6
 
 export function LoginPage() {
+  const [view, setView] = useState<View>('login')
   const [email, setEmail] = useState('')
-  const [otpSent, setOtpSent] = useState(false)
-  const [otp, setOtp] = useState<string[]>(Array(6).fill(''))
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(''))
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const { signInWithOtp, verifyOtp } = useAuth()
+  const [success, setSuccess] = useState('')
+  const { signUp, signIn, verifyOtp, resetPasswordRequest, updatePassword } = useAuth()
   const navigate = useNavigate()
   const otpRefs = useRef<(HTMLInputElement | null)[]>([])
 
-  const handleSendOtp = async (e: FormEvent) => {
+  const resetForm = () => {
+    setError('')
+    setSuccess('')
+    setPassword('')
+    setConfirmPassword('')
+    setOtp(Array(OTP_LENGTH).fill(''))
+    setShowPassword(false)
+  }
+
+  const goTo = (v: View) => {
+    resetForm()
+    setView(v)
+  }
+
+  // ── LOGIN ──
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
-
-    const { error } = await signInWithOtp(email)
+    const { error } = await signIn(email, password)
     if (error) {
-      setError(error.message)
-    } else {
-      setOtpSent(true)
-    }
-    setLoading(false)
-  }
-
-  const handleVerifyOtp = async () => {
-    const token = otp.join('')
-    if (token.length !== 6) return
-
-    setError('')
-    setLoading(true)
-    const { error } = await verifyOtp(email, token)
-    if (error) {
-      setError('Código inválido. Tente novamente.')
-      setOtp(Array(6).fill(''))
-      otpRefs.current[0]?.focus()
+      setError('Email ou senha incorretos.')
     } else {
       navigate('/dashboard')
     }
     setLoading(false)
   }
 
+  // ── SIGNUP ──
+  const handleSignUp = async (e: FormEvent) => {
+    e.preventDefault()
+    setError('')
+
+    if (password.length < 6) {
+      setError('A senha deve ter pelo menos 6 caracteres.')
+      return
+    }
+    if (password !== confirmPassword) {
+      setError('As senhas não coincidem.')
+      return
+    }
+
+    setLoading(true)
+    const { error } = await signUp(email, password)
+    if (error) {
+      setError(error.message)
+    } else {
+      setView('verify-signup')
+      setSuccess('Conta criada! Verifique seu email para o código de confirmação.')
+    }
+    setLoading(false)
+  }
+
+  // ── FORGOT PASSWORD ──
+  const handleForgotPassword = async (e: FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+    const { error } = await resetPasswordRequest(email)
+    if (error) {
+      setError(error.message)
+    } else {
+      setView('verify-reset')
+      setSuccess('Se o email estiver cadastrado, você receberá um código de recuperação.')
+    }
+    setLoading(false)
+  }
+
+  // ── VERIFY OTP (signup or reset) ──
+  const handleVerifyOtp = async () => {
+    const token = otp.join('')
+    if (token.length !== OTP_LENGTH) return
+
+    setError('')
+    setLoading(true)
+    const otpType = view === 'verify-signup' ? 'signup' : 'recovery'
+    const { error } = await verifyOtp(email, token, otpType)
+
+    if (error) {
+      setError('Código inválido. Verifique e tente novamente.')
+      setOtp(Array(OTP_LENGTH).fill(''))
+      otpRefs.current[0]?.focus()
+    } else if (view === 'verify-signup') {
+      navigate('/dashboard')
+    } else {
+      setView('new-password')
+      setSuccess('Código verificado! Defina sua nova senha.')
+    }
+    setLoading(false)
+  }
+
+  // ── UPDATE PASSWORD ──
+  const handleUpdatePassword = async (e: FormEvent) => {
+    e.preventDefault()
+    setError('')
+
+    if (password.length < 6) {
+      setError('A senha deve ter pelo menos 6 caracteres.')
+      return
+    }
+    if (password !== confirmPassword) {
+      setError('As senhas não coincidem.')
+      return
+    }
+
+    setLoading(true)
+    const { error } = await updatePassword(password)
+    if (error) {
+      setError(error.message)
+    } else {
+      navigate('/dashboard')
+    }
+    setLoading(false)
+  }
+
+  // ── OTP INPUT HANDLERS ──
   const handleOtpChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return
     const newOtp = [...otp]
     newOtp[index] = value.slice(-1)
     setOtp(newOtp)
 
-    if (value && index < 5) {
+    if (value && index < OTP_LENGTH - 1) {
       otpRefs.current[index + 1]?.focus()
     }
 
-    if (newOtp.every((d) => d !== '') && newOtp.join('').length === 6) {
+    if (newOtp.every((d) => d !== '')) {
       setTimeout(() => {
         const token = newOtp.join('')
+        const otpType = view === 'verify-signup' ? 'signup' : 'recovery'
         setError('')
         setLoading(true)
-        verifyOtp(email, token).then(({ error }) => {
+        verifyOtp(email, token, otpType).then(({ error }) => {
           if (error) {
-            setError('Código inválido. Tente novamente.')
-            setOtp(Array(6).fill(''))
+            setError('Código inválido. Verifique e tente novamente.')
+            setOtp(Array(OTP_LENGTH).fill(''))
             otpRefs.current[0]?.focus()
-          } else {
+          } else if (view === 'verify-signup') {
             navigate('/dashboard')
+          } else {
+            setView('new-password')
+            setSuccess('Código verificado! Defina sua nova senha.')
           }
           setLoading(false)
         })
@@ -79,9 +176,152 @@ export function LoginPage() {
     }
   }
 
+  const handleOtpPaste = (e: React.ClipboardEvent) => {
+    e.preventDefault()
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, OTP_LENGTH)
+    if (!pasted) return
+    const newOtp = Array(OTP_LENGTH).fill('')
+    for (let i = 0; i < pasted.length; i++) {
+      newOtp[i] = pasted[i]
+    }
+    setOtp(newOtp)
+    const nextIndex = Math.min(pasted.length, OTP_LENGTH - 1)
+    otpRefs.current[nextIndex]?.focus()
+
+    if (pasted.length === OTP_LENGTH) {
+      setTimeout(() => {
+        const otpType = view === 'verify-signup' ? 'signup' : 'recovery'
+        setError('')
+        setLoading(true)
+        verifyOtp(email, pasted, otpType).then(({ error }) => {
+          if (error) {
+            setError('Código inválido. Verifique e tente novamente.')
+            setOtp(Array(OTP_LENGTH).fill(''))
+            otpRefs.current[0]?.focus()
+          } else if (view === 'verify-signup') {
+            navigate('/dashboard')
+          } else {
+            setView('new-password')
+            setSuccess('Código verificado! Defina sua nova senha.')
+          }
+          setLoading(false)
+        })
+      }, 100)
+    }
+  }
+
+  // ── SHARED UI COMPONENTS ──
+  const emailInput = (disabled = false) => (
+    <div className="relative mb-4">
+      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+      <input
+        type="email"
+        placeholder="seu@email.com"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        disabled={disabled}
+        required
+        className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all text-sm disabled:opacity-60"
+      />
+    </div>
+  )
+
+  const passwordInput = (placeholder: string, value: string, onChange: (v: string) => void) => (
+    <div className="relative mb-4">
+      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+      <input
+        type={showPassword ? 'text' : 'password'}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        required
+        minLength={6}
+        className="w-full pl-11 pr-11 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all text-sm"
+      />
+      <button
+        type="button"
+        onClick={() => setShowPassword(!showPassword)}
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+      >
+        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+      </button>
+    </div>
+  )
+
+  const submitButton = (label: string, icon?: React.ReactNode) => (
+    <button
+      type="submit"
+      disabled={loading}
+      className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-xl transition-colors text-sm cursor-pointer"
+    >
+      {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>{label}{icon}</>}
+    </button>
+  )
+
+  const otpInput = () => (
+    <div>
+      <div className="flex gap-1.5 justify-center mb-6" onPaste={handleOtpPaste}>
+        {otp.map((digit, i) => (
+          <input
+            key={i}
+            ref={(el) => { otpRefs.current[i] = el }}
+            type="text"
+            inputMode="numeric"
+            maxLength={1}
+            value={digit}
+            onChange={(e) => handleOtpChange(i, e.target.value)}
+            onKeyDown={(e) => handleOtpKeyDown(i, e)}
+            className="w-10 h-12 text-center text-lg font-semibold rounded-lg border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all"
+          />
+        ))}
+      </div>
+      <button
+        type="button"
+        onClick={handleVerifyOtp}
+        disabled={loading || otp.some((d) => !d)}
+        className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-xl transition-colors text-sm cursor-pointer"
+      >
+        {loading ? (
+          <Loader2 className="w-5 h-5 animate-spin" />
+        ) : (
+          <>Verificar Código <ShieldCheck className="w-4 h-4" /></>
+        )}
+      </button>
+    </div>
+  )
+
+  // ── VIEW CONFIG ──
+  const views: Record<View, { title: string; subtitle: string }> = {
+    login: {
+      title: 'Entrar na sua conta',
+      subtitle: 'Use seu email e senha para acessar a plataforma.',
+    },
+    signup: {
+      title: 'Criar sua conta',
+      subtitle: 'Preencha seus dados. Você receberá um código de confirmação por email.',
+    },
+    'verify-signup': {
+      title: 'Confirme seu email',
+      subtitle: `Enviamos um código de 8 dígitos para ${email}`,
+    },
+    forgot: {
+      title: 'Recuperar senha',
+      subtitle: 'Informe seu email cadastrado para receber o código de recuperação.',
+    },
+    'verify-reset': {
+      title: 'Código de recuperação',
+      subtitle: `Enviamos um código de 8 dígitos para ${email}`,
+    },
+    'new-password': {
+      title: 'Defina sua nova senha',
+      subtitle: 'Escolha uma senha segura com pelo menos 6 caracteres.',
+    },
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
       <div className="w-full max-w-md">
+        {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
             <ShieldCheck className="w-10 h-10 text-indigo-600" />
@@ -90,92 +330,106 @@ export function LoginPage() {
           <p className="text-slate-500 text-sm">Otimize seu currículo para vencer os robôs ATS</p>
         </div>
 
+        {/* Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-          <h1 className="text-xl font-semibold text-slate-900 mb-1">
-            {otpSent ? 'Verifique seu email' : 'Entre ou crie sua conta'}
-          </h1>
-          <p className="text-slate-500 text-sm mb-6">
-            {otpSent
-              ? `Enviamos um código de 6 dígitos para ${email}`
-              : 'Use seu email para entrar. Sem senha, sem complicação.'}
-          </p>
+          {/* Back button for sub-views */}
+          {view !== 'login' && view !== 'signup' && (
+            <button
+              onClick={() => goTo(view === 'verify-signup' ? 'signup' : view === 'new-password' ? 'login' : 'login')}
+              className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 mb-4 cursor-pointer transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Voltar
+            </button>
+          )}
 
+          <h1 className="text-xl font-semibold text-slate-900 mb-1">{views[view].title}</h1>
+          <p className="text-slate-500 text-sm mb-6">{views[view].subtitle}</p>
+
+          {/* Success */}
+          {success && (
+            <div className="bg-emerald-50 text-emerald-700 text-sm px-4 py-3 rounded-xl mb-4">
+              {success}
+            </div>
+          )}
+
+          {/* Error */}
           {error && (
             <div className="bg-rose-50 text-rose-600 text-sm px-4 py-3 rounded-xl mb-4">
               {error}
             </div>
           )}
 
-          {!otpSent ? (
-            <form onSubmit={handleSendOtp}>
-              <div className="relative mb-4">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                <input
-                  type="email"
-                  placeholder="seu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all text-sm"
-                />
+          {/* ── LOGIN VIEW ── */}
+          {view === 'login' && (
+            <>
+              <form onSubmit={handleLogin}>
+                {emailInput()}
+                {passwordInput('Sua senha', password, setPassword)}
+                {submitButton('Entrar', <ArrowRight className="w-4 h-4" />)}
+              </form>
+              <div className="mt-4 space-y-2 text-center">
+                <button
+                  onClick={() => goTo('forgot')}
+                  className="text-sm text-indigo-600 hover:text-indigo-700 cursor-pointer transition-colors"
+                >
+                  Esqueci minha senha
+                </button>
+                <p className="text-sm text-slate-500">
+                  Não tem conta?{' '}
+                  <button
+                    onClick={() => goTo('signup')}
+                    className="text-indigo-600 hover:text-indigo-700 font-medium cursor-pointer transition-colors"
+                  >
+                    Criar conta
+                  </button>
+                </p>
               </div>
-              <button
-                type="submit"
-                disabled={loading || !email}
-                className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-xl transition-colors text-sm cursor-pointer"
-              >
-                {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <>
-                    Continuar com Email
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
+            </>
+          )}
+
+          {/* ── SIGNUP VIEW ── */}
+          {view === 'signup' && (
+            <>
+              <form onSubmit={handleSignUp}>
+                {emailInput()}
+                {passwordInput('Crie uma senha (mín. 6 caracteres)', password, setPassword)}
+                {passwordInput('Confirme sua senha', confirmPassword, setConfirmPassword)}
+                {submitButton('Criar Conta', <ArrowRight className="w-4 h-4" />)}
+              </form>
+              <p className="mt-4 text-sm text-slate-500 text-center">
+                Já tem conta?{' '}
+                <button
+                  onClick={() => goTo('login')}
+                  className="text-indigo-600 hover:text-indigo-700 font-medium cursor-pointer transition-colors"
+                >
+                  Entrar
+                </button>
+              </p>
+            </>
+          )}
+
+          {/* ── VERIFY SIGNUP OTP ── */}
+          {view === 'verify-signup' && otpInput()}
+
+          {/* ── FORGOT PASSWORD ── */}
+          {view === 'forgot' && (
+            <form onSubmit={handleForgotPassword}>
+              {emailInput()}
+              {submitButton('Enviar código de recuperação', <Mail className="w-4 h-4" />)}
             </form>
-          ) : (
-            <div>
-              <div className="flex gap-2 justify-center mb-6">
-                {otp.map((digit, i) => (
-                  <input
-                    key={i}
-                    ref={(el) => { otpRefs.current[i] = el }}
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handleOtpChange(i, e.target.value)}
-                    onKeyDown={(e) => handleOtpKeyDown(i, e)}
-                    className="w-12 h-14 text-center text-xl font-semibold rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all"
-                  />
-                ))}
-              </div>
-              <button
-                onClick={handleVerifyOtp}
-                disabled={loading || otp.some((d) => !d)}
-                className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-xl transition-colors text-sm cursor-pointer"
-              >
-                {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <>
-                    Verificar Código
-                    <ShieldCheck className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-              <button
-                onClick={() => {
-                  setOtpSent(false)
-                  setOtp(Array(6).fill(''))
-                  setError('')
-                }}
-                className="w-full mt-3 text-slate-500 hover:text-slate-700 text-sm transition-colors cursor-pointer"
-              >
-                Usar outro email
-              </button>
-            </div>
+          )}
+
+          {/* ── VERIFY RESET OTP ── */}
+          {view === 'verify-reset' && otpInput()}
+
+          {/* ── NEW PASSWORD ── */}
+          {view === 'new-password' && (
+            <form onSubmit={handleUpdatePassword}>
+              {passwordInput('Nova senha (mín. 6 caracteres)', password, setPassword)}
+              {passwordInput('Confirme a nova senha', confirmPassword, setConfirmPassword)}
+              {submitButton('Salvar nova senha', <ShieldCheck className="w-4 h-4" />)}
+            </form>
           )}
         </div>
 
