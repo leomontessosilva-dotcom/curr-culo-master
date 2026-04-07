@@ -34,6 +34,7 @@ export function ResultsPage() {
 
   const [analyzing, setAnalyzing] = useState(true)
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null)
+  const [analysisError, setAnalysisError] = useState('')
   const [optimizing, setOptimizing] = useState(false)
   const [optimized, setOptimized] = useState(false)
   const [optimizedText, setOptimizedText] = useState('')
@@ -47,10 +48,15 @@ export function ResultsPage() {
       return
     }
 
-    analyzeResume(resumeText, jobDescription, targetAts).then((result) => {
-      setAnalysis(result)
-      setAnalyzing(false)
-    })
+    analyzeResume(resumeText, jobDescription, targetAts)
+      .then((result) => {
+        setAnalysis(result)
+        setAnalyzing(false)
+      })
+      .catch((err) => {
+        setAnalysisError(err instanceof Error ? err.message : 'Erro ao analisar currículo')
+        setAnalyzing(false)
+      })
   }, [resumeText, jobDescription, targetAts, navigate])
 
   const handleOptimize = async () => {
@@ -73,11 +79,15 @@ export function ResultsPage() {
       setOptimizationSteps([...steps])
     }
 
-    const result = await optimizeResume(resumeText, jobDescription, targetAts)
-    setOptimizedText(result.optimizedText)
-    setFinalAffinityScore(result.newAffinityScore)
+    try {
+      const result = await optimizeResume(resumeText, jobDescription, targetAts)
+      setOptimizedText(result.optimizedText)
+      setFinalAffinityScore(result.newAffinityScore)
+      setOptimized(true)
+    } catch (err) {
+      setAnalysisError(err instanceof Error ? err.message : 'Erro ao otimizar currículo')
+    }
     setOptimizing(false)
-    setOptimized(true)
   }
 
   const handleDownload = async () => {
@@ -99,6 +109,23 @@ export function ResultsPage() {
         <p className="text-slate-500 text-sm">
           Verificando compatibilidade visual e afinidade com a vaga no {targetAts}
         </p>
+      </div>
+    )
+  }
+
+  if (analysisError && !analysis) {
+    return (
+      <div className="max-w-2xl mx-auto text-center py-20">
+        <XCircle className="w-12 h-12 text-rose-500 mx-auto mb-4" />
+        <h2 className="text-xl font-semibold text-slate-900 mb-2">Erro na análise</h2>
+        <p className="text-slate-500 text-sm mb-6">{analysisError}</p>
+        <button
+          onClick={() => navigate('/dashboard/analyze')}
+          className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-xl transition-colors text-sm cursor-pointer"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Tentar novamente
+        </button>
       </div>
     )
   }
@@ -240,6 +267,14 @@ export function ResultsPage() {
                   })}
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Optimization Error */}
+          {analysisError && analysis && (
+            <div className="bg-rose-50 border border-rose-200 rounded-2xl p-6">
+              <p className="text-sm text-rose-700 font-medium mb-1">Erro na otimização</p>
+              <p className="text-sm text-rose-600">{analysisError}</p>
             </div>
           )}
 
