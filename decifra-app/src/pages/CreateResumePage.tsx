@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { loadResumeProfile, saveResumeProfile } from '../services/resumeProfile'
 import {
   User,
   Mail,
@@ -86,9 +87,54 @@ export function CreateResumePage() {
   // Skills
   const [skills, setSkills] = useState('')
 
+  // Loading/saving state
+  const [loadingProfile, setLoadingProfile] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [lastSaved, setLastSaved] = useState<string | null>(null)
+
   // Section collapse
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({})
   const toggle = (s: string) => setCollapsed((p) => ({ ...p, [s]: !p[s] }))
+
+  // Load saved profile on mount
+  useEffect(() => {
+    loadResumeProfile().then((profile) => {
+      if (profile) {
+        setFullName(profile.full_name)
+        setEmail(profile.email)
+        setPhone(profile.phone)
+        setCity(profile.city)
+        setLinkedin(profile.linkedin)
+        setObjective(profile.objective)
+        if (profile.experiences.length > 0) setExperiences(profile.experiences)
+        if (profile.educations.length > 0) setEducations(profile.educations)
+        setCertifications(profile.certifications)
+        if (profile.languages.length > 0) setLanguages(profile.languages)
+        setSkills(profile.skills)
+      }
+      setLoadingProfile(false)
+    })
+  }, [])
+
+  // Save profile
+  const handleSave = useCallback(async () => {
+    setSaving(true)
+    await saveResumeProfile({
+      full_name: fullName,
+      email,
+      phone,
+      city,
+      linkedin,
+      objective,
+      experiences,
+      educations,
+      certifications,
+      languages,
+      skills,
+    })
+    setLastSaved(new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }))
+    setSaving(false)
+  }, [fullName, email, phone, city, linkedin, objective, experiences, educations, certifications, languages, skills])
 
   // ── Experience handlers ──
   const addExperience = () =>
@@ -126,6 +172,9 @@ export function CreateResumePage() {
     if (!fullName.trim() || !email.trim()) return
     setLoading(true)
 
+    // Save before navigating
+    await handleSave()
+
     const resumeData = {
       fullName,
       email,
@@ -161,13 +210,34 @@ export function CreateResumePage() {
 
   const inputClass = 'w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all text-sm'
 
+  if (loadingProfile) {
+    return (
+      <div className="max-w-3xl mx-auto text-center py-20">
+        <Loader2 className="w-8 h-8 animate-spin text-slate-900 mx-auto mb-4" />
+        <p className="text-slate-500 text-sm">Carregando seus dados...</p>
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-3xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900 mb-1">Criar Currículo Otimizado</h1>
-        <p className="text-slate-500 text-sm">
-          Preencha seus dados e a IA vai gerar um currículo formatado para passar nos filtros ATS.
-        </p>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 mb-1">Criar Currículo Otimizado</h1>
+          <p className="text-slate-500 text-sm">
+            Preencha seus dados e a IA vai gerar um currículo formatado para passar nos filtros ATS.
+          </p>
+        </div>
+        <div className="flex items-center gap-3 shrink-0">
+          {lastSaved && <span className="text-xs text-slate-400">Salvo às {lastSaved}</span>}
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="flex items-center gap-1.5 text-sm bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium py-2 px-4 rounded-xl transition-colors cursor-pointer disabled:opacity-50"
+          >
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Salvar'}
+          </button>
+        </div>
       </div>
 
       <div className="space-y-6">
