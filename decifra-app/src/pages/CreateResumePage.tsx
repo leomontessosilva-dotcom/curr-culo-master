@@ -414,9 +414,9 @@ export function CreateResumePage() {
           {!collapsed['languages'] && (
             <div className="mt-4 space-y-3">
               {languages.map((lang) => (
-                <div key={lang.id} className="flex items-center gap-3">
-                  <input type="text" value={lang.name} onChange={(e) => updateLanguage(lang.id, 'name', e.target.value)} placeholder="Idioma" className={`${inputClass} flex-1`} />
-                  <select value={lang.level} onChange={(e) => updateLanguage(lang.id, 'level', e.target.value)} className={`${inputClass} w-40`}>
+                <div key={lang.id} className="grid grid-cols-[1fr_160px_auto] gap-3 items-center">
+                  <input type="text" value={lang.name} onChange={(e) => updateLanguage(lang.id, 'name', e.target.value)} placeholder="Ex: Inglês" className={inputClass} />
+                  <select value={lang.level} onChange={(e) => updateLanguage(lang.id, 'level', e.target.value)} className={inputClass}>
                     {LANGUAGE_LEVELS.map((l) => (
                       <option key={l} value={l}>{l}</option>
                     ))}
