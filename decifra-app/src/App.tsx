@@ -6,6 +6,8 @@ import { LoginPage } from './pages/LoginPage'
 import { DashboardHome } from './pages/DashboardHome'
 import { AnalyzePage } from './pages/AnalyzePage'
 import { ResultsPage } from './pages/ResultsPage'
+import { CreateResumePage } from './pages/CreateResumePage'
+import { CreateResumeResultPage } from './pages/CreateResumeResultPage'
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
             <Route index element={<DashboardHome />} />
             <Route path="analyze" element={<AnalyzePage />} />
             <Route path="results" element={<ResultsPage />} />
+            <Route path="create" element={<CreateResumePage />} />
+            <Route path="create-result" element={<CreateResumeResultPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

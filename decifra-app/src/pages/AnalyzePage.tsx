@@ -89,7 +89,7 @@ export function AnalyzePage() {
                 onClick={() => setSelectedAts(ats.value)}
                 className={`px-5 py-2.5 rounded-xl border text-sm font-medium transition-all cursor-pointer ${
                   selectedAts === ats.value
-                    ? `${ats.color} ring-2 ring-offset-1 ring-indigo-400`
+                    ? `${ats.color} ring-2 ring-offset-1 ring-slate-900`
                     : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
                 }`}
               >
@@ -110,7 +110,7 @@ export function AnalyzePage() {
             onChange={(e) => setJobDescription(e.target.value)}
             placeholder="Cole aqui a descrição completa da vaga (requisitos, responsabilidades, qualificações)..."
             rows={8}
-            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all text-sm resize-none"
+            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all text-sm resize-none"
           />
           <p className="text-xs text-slate-400 mt-2">
             {jobDescription.length > 0
@@ -158,8 +158,8 @@ export function AnalyzePage() {
               onDrop={handleDrop}
               className={`border-2 border-dashed rounded-2xl p-12 text-center transition-all cursor-pointer ${
                 dragOver
-                  ? 'border-indigo-400 bg-indigo-50'
-                  : 'border-slate-300 hover:border-indigo-300 hover:bg-slate-50'
+                  ? 'border-slate-900 bg-slate-100'
+                  : 'border-slate-300 hover:border-slate-600 hover:bg-slate-50'
               }`}
               onClick={() => {
                 const input = document.createElement('input')
@@ -185,7 +185,7 @@ export function AnalyzePage() {
         <button
           onClick={handleSubmit}
           disabled={!isReady || loading}
-          className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-2xl transition-all text-sm shadow-lg shadow-indigo-200 cursor-pointer"
+          className="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-black disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-2xl transition-all text-sm shadow-lg shadow-slate-300 cursor-pointer"
         >
           {loading ? (
             <Loader2 className="w-5 h-5 animate-spin" />
