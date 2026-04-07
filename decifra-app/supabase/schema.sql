@@ -1,4 +1,4 @@
--- Decifra.ia Database Schema
+-- Contrata.AI Database Schema
 -- Run this in Supabase SQL Editor
 
 -- Profiles table (extends Supabase Auth users)

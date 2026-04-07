@@ -104,7 +104,7 @@ export function ResultsPage() {
   if (analyzing) {
     return (
       <div className="max-w-2xl mx-auto text-center py-20">
-        <Loader2 className="w-12 h-12 animate-spin text-indigo-600 mx-auto mb-4" />
+        <Loader2 className="w-12 h-12 animate-spin text-slate-900 mx-auto mb-4" />
         <h2 className="text-xl font-semibold text-slate-900 mb-2">Analisando seu currículo...</h2>
         <p className="text-slate-500 text-sm">
           Verificando compatibilidade visual e afinidade com a vaga no {targetAts}
@@ -121,7 +121,7 @@ export function ResultsPage() {
         <p className="text-slate-500 text-sm mb-6">{analysisError}</p>
         <button
           onClick={() => navigate('/dashboard/analyze')}
-          className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-xl transition-colors text-sm cursor-pointer"
+          className="inline-flex items-center gap-2 bg-slate-900 hover:bg-black text-white font-medium py-3 px-6 rounded-xl transition-colors text-sm cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
           Tentar novamente
@@ -282,7 +282,7 @@ export function ResultsPage() {
           {optimizing && (
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
               <h3 className="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin text-indigo-600" />
+                <Loader2 className="w-4 h-4 animate-spin text-slate-900" />
                 Otimizando currículo...
               </h3>
               <div className="space-y-3">
@@ -329,7 +329,7 @@ export function ResultsPage() {
             {!optimized && !optimizing && (
               <button
                 onClick={handleOptimize}
-                className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 px-6 rounded-2xl transition-all text-sm shadow-lg shadow-indigo-200 cursor-pointer animate-pulse hover:animate-none"
+                className="flex-1 flex items-center justify-center gap-2 bg-slate-900 hover:bg-black text-white font-semibold py-4 px-6 rounded-2xl transition-all text-sm shadow-lg shadow-slate-300 cursor-pointer animate-pulse hover:animate-none"
               >
                 <Sparkles className="w-5 h-5" />
                 Melhorar Currículo com IA

@@ -227,7 +227,7 @@ export function LoginPage() {
         onChange={(e) => setEmail(e.target.value)}
         disabled={disabled}
         required
-        className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all text-sm disabled:opacity-60"
+        className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all text-sm disabled:opacity-60"
       />
     </div>
   )
@@ -242,7 +242,7 @@ export function LoginPage() {
         onChange={(e) => onChange(e.target.value)}
         required
         minLength={6}
-        className="w-full pl-11 pr-11 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all text-sm"
+        className="w-full pl-11 pr-11 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all text-sm"
       />
       <button
         type="button"
@@ -258,7 +258,7 @@ export function LoginPage() {
     <button
       type="submit"
       disabled={loading}
-      className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-xl transition-colors text-sm cursor-pointer"
+      className="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-xl transition-colors text-sm cursor-pointer"
     >
       {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>{label}{icon}</>}
     </button>
@@ -277,7 +277,7 @@ export function LoginPage() {
             value={digit}
             onChange={(e) => handleOtpChange(i, e.target.value)}
             onKeyDown={(e) => handleOtpKeyDown(i, e)}
-            className="w-10 h-12 text-center text-lg font-semibold rounded-lg border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all"
+            className="w-10 h-12 text-center text-lg font-semibold rounded-lg border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
           />
         ))}
       </div>
@@ -285,7 +285,7 @@ export function LoginPage() {
         type="button"
         onClick={handleVerifyOtp}
         disabled={loading || otp.some((d) => !d)}
-        className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-xl transition-colors text-sm cursor-pointer"
+        className="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-xl transition-colors text-sm cursor-pointer"
       >
         {loading ? (
           <Loader2 className="w-5 h-5 animate-spin" />
@@ -330,8 +330,8 @@ export function LoginPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
-            <ShieldCheck className="w-10 h-10 text-indigo-600" />
-            <span className="text-3xl font-bold text-slate-900 tracking-tight">Decifra.ia</span>
+            <ShieldCheck className="w-10 h-10 text-slate-900" />
+            <span className="text-3xl font-bold text-slate-900 tracking-tight">Contrata.AI</span>
           </div>
           <p className="text-slate-500 text-sm">Otimize seu currículo para vencer os robôs ATS</p>
         </div>
@@ -377,7 +377,7 @@ export function LoginPage() {
               <div className="mt-4 space-y-2 text-center">
                 <button
                   onClick={() => goTo('forgot')}
-                  className="text-sm text-indigo-600 hover:text-indigo-700 cursor-pointer transition-colors"
+                  className="text-sm text-slate-900 hover:text-black cursor-pointer transition-colors"
                 >
                   Esqueci minha senha
                 </button>
@@ -385,7 +385,7 @@ export function LoginPage() {
                   Não tem conta?{' '}
                   <button
                     onClick={() => goTo('signup')}
-                    className="text-indigo-600 hover:text-indigo-700 font-medium cursor-pointer transition-colors"
+                    className="text-slate-900 hover:text-black font-medium cursor-pointer transition-colors"
                   >
                     Criar conta
                   </button>
@@ -406,7 +406,7 @@ export function LoginPage() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     required
-                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all text-sm"
+                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all text-sm"
                   />
                 </div>
                 {emailInput()}
@@ -418,7 +418,7 @@ export function LoginPage() {
                 Já tem conta?{' '}
                 <button
                   onClick={() => goTo('login')}
-                  className="text-indigo-600 hover:text-indigo-700 font-medium cursor-pointer transition-colors"
+                  className="text-slate-900 hover:text-black font-medium cursor-pointer transition-colors"
                 >
                   Entrar
                 </button>

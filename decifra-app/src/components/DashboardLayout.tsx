@@ -16,8 +16,8 @@ export function DashboardLayout() {
       <header className="bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-7 h-7 text-indigo-600" />
-            <span className="text-xl font-bold text-slate-900 tracking-tight">Decifra.ia</span>
+            <ShieldCheck className="w-7 h-7 text-slate-900" />
+            <span className="text-xl font-bold text-slate-900 tracking-tight">Contrata.AI</span>
           </div>
           <div className="flex items-center gap-4">
             <span className="text-sm text-slate-500 hidden sm:block">{user?.email}</span>
