@@ -6,11 +6,13 @@ export function DashboardHome() {
   const { user } = useAuth()
   const navigate = useNavigate()
 
+  const firstName = user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || ''
+
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-10">
         <h1 className="text-2xl font-bold text-slate-900 mb-1">
-          Olá{user?.email ? `, ${user.email.split('@')[0]}` : ''}! 👋
+          Olá{firstName ? `, ${firstName}` : ''}!
         </h1>
         <p className="text-slate-500 text-sm">
           Pronto para otimizar seu currículo e vencer os robôs ATS?
