@@ -8,6 +8,8 @@ import { AnalyzePage } from './pages/AnalyzePage'
 import { ResultsPage } from './pages/ResultsPage'
 import { CreateResumePage } from './pages/CreateResumePage'
 import { CreateResumeResultPage } from './pages/CreateResumeResultPage'
+import { CreatePostPage } from './pages/CreatePostPage'
+import { PostResultPage } from './pages/PostResultPage'
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
             <Route path="results" element={<ResultsPage />} />
             <Route path="create" element={<CreateResumePage />} />
             <Route path="create-result" element={<CreateResumeResultPage />} />
+            <Route path="post" element={<CreatePostPage />} />
+            <Route path="post-result" element={<PostResultPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

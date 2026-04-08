@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { Plus, Sparkles, Shield, Zap, FileText } from 'lucide-react'
+import { Plus, Sparkles, Shield, Zap, FileText, PenLine } from 'lucide-react'
 
 export function DashboardHome() {
   const { user } = useAuth()
@@ -19,7 +19,7 @@ export function DashboardHome() {
       </div>
 
       {/* CTA Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
         <div
           onClick={() => navigate('/dashboard/analyze')}
           className="bg-gradient-to-br from-slate-900 to-black rounded-2xl p-8 text-white cursor-pointer hover:from-black hover:to-slate-900 transition-all shadow-xl shadow-slate-300"
@@ -49,6 +49,23 @@ export function DashboardHome() {
               <h2 className="text-lg font-bold mb-1">Criar Currículo Otimizado</h2>
               <p className="text-emerald-200 text-sm">
                 Preencha seus dados e a IA gera um currículo ATS-compliant
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          onClick={() => navigate('/dashboard/post')}
+          className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-8 text-white cursor-pointer hover:from-blue-700 hover:to-blue-800 transition-all shadow-xl shadow-blue-200"
+        >
+          <div className="flex items-center gap-4">
+            <div className="bg-white/20 rounded-xl p-3">
+              <PenLine className="w-8 h-8" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold mb-1">Criar Post LinkedIn</h2>
+              <p className="text-blue-200 text-sm">
+                Gere posts otimizados para engajamento com IA
               </p>
             </div>
           </div>
