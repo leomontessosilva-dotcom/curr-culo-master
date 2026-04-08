@@ -1,6 +1,7 @@
 import { Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { LogOut } from 'lucide-react'
+import { MobileBottomNav } from './MobileBottomNav'
 
 export function DashboardLayout() {
   const { user, signOut } = useAuth()
@@ -26,14 +27,15 @@ export function DashboardLayout() {
               className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition-colors cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
-              Sair
+              <span className="hidden sm:inline">Sair</span>
             </button>
           </div>
         </div>
       </header>
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24 sm:pb-8">
         <Outlet />
       </main>
+      <MobileBottomNav />
     </div>
   )
 }

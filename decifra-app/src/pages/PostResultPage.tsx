@@ -170,17 +170,17 @@ export function PostResultPage() {
       {post && (
         <>
           {/* Post Preview */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
-            <div className="flex items-center justify-between mb-4">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6 mb-6">
+            <div className="flex items-start sm:items-center justify-between gap-2 mb-4">
               <h3 className="text-sm font-semibold text-slate-700">Preview do Post</h3>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-1.5 justify-end">
                 {saved && (
-                  <span className="text-xs bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-medium flex items-center gap-1">
+                  <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full font-medium flex items-center gap-1">
                     <CheckCircle2 className="w-3 h-3" />
-                    Salvo no histórico
+                    Salvo
                   </span>
                 )}
-                <span className="text-xs bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full font-medium">
+                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full font-medium">
                   LinkedIn Ready
                 </span>
               </div>

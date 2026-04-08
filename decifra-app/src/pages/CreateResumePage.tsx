@@ -221,28 +221,29 @@ export function CreateResumePage() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 mb-1">Criar Currículo Otimizado</h1>
-          <p className="text-slate-500 text-sm">
-            Preencha seus dados e a IA vai gerar um currículo formatado para passar nos filtros ATS.
-          </p>
+      <div className="mb-8">
+        <div className="flex items-start sm:items-center justify-between gap-3 mb-1">
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Criar Currículo Otimizado</h1>
+          <div className="flex items-center gap-2 shrink-0">
+            {lastSaved && <span className="text-xs text-slate-400 hidden sm:block">Salvo às {lastSaved}</span>}
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="flex items-center gap-1.5 text-sm bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium py-2 px-3 sm:px-4 rounded-xl transition-colors cursor-pointer disabled:opacity-50"
+            >
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Salvar'}
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-3 shrink-0">
-          {lastSaved && <span className="text-xs text-slate-400">Salvo às {lastSaved}</span>}
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="flex items-center gap-1.5 text-sm bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium py-2 px-4 rounded-xl transition-colors cursor-pointer disabled:opacity-50"
-          >
-            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Salvar'}
-          </button>
-        </div>
+        <p className="text-slate-500 text-sm">
+          Preencha seus dados e a IA vai gerar um currículo formatado para passar nos filtros ATS.
+        </p>
+        {lastSaved && <p className="text-xs text-slate-400 mt-1 sm:hidden">Salvo às {lastSaved}</p>}
       </div>
 
       <div className="space-y-6">
         {/* Personal Info */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
           {sectionHeader('Dados Pessoais', <User className="w-4 h-4 text-slate-600" />, 'personal')}
           {!collapsed['personal'] && (
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -281,7 +282,7 @@ export function CreateResumePage() {
         </div>
 
         {/* Experiences */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
           {sectionHeader('Experiência Profissional', <Briefcase className="w-4 h-4 text-slate-600" />, 'experience')}
           {!collapsed['experience'] && (
             <div className="mt-4 space-y-6">
@@ -329,7 +330,7 @@ export function CreateResumePage() {
         </div>
 
         {/* Education */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
           {sectionHeader('Formação Acadêmica', <GraduationCap className="w-4 h-4 text-slate-600" />, 'education')}
           {!collapsed['education'] && (
             <div className="mt-4 space-y-6">
@@ -373,7 +374,7 @@ export function CreateResumePage() {
         </div>
 
         {/* Certifications */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
           {sectionHeader('Certificações e Cursos', <Award className="w-4 h-4 text-slate-600" />, 'certs')}
           {!collapsed['certs'] && (
             <div className="mt-4 space-y-4">
@@ -409,20 +410,27 @@ export function CreateResumePage() {
         </div>
 
         {/* Languages */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
           {sectionHeader('Idiomas', <Languages className="w-4 h-4 text-slate-600" />, 'languages')}
           {!collapsed['languages'] && (
             <div className="mt-4 space-y-3">
               {languages.map((lang) => (
-                <div key={lang.id} className="grid grid-cols-[1fr_160px_auto] gap-3 items-center">
+                <div key={lang.id} className="grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_160px_auto] gap-2 sm:gap-3 items-center">
                   <input type="text" value={lang.name} onChange={(e) => updateLanguage(lang.id, 'name', e.target.value)} placeholder="Ex: Inglês" className={inputClass} />
-                  <select value={lang.level} onChange={(e) => updateLanguage(lang.id, 'level', e.target.value)} className={inputClass}>
-                    {LANGUAGE_LEVELS.map((l) => (
-                      <option key={l} value={l}>{l}</option>
-                    ))}
-                  </select>
+                  <div className="flex items-center gap-2">
+                    <select value={lang.level} onChange={(e) => updateLanguage(lang.id, 'level', e.target.value)} className={`${inputClass} sm:w-auto`}>
+                      {LANGUAGE_LEVELS.map((l) => (
+                        <option key={l} value={l}>{l}</option>
+                      ))}
+                    </select>
+                    {languages.length > 1 && (
+                      <button onClick={() => removeLanguage(lang.id)} className="text-slate-400 hover:text-rose-500 cursor-pointer shrink-0 sm:hidden">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                   {languages.length > 1 && (
-                    <button onClick={() => removeLanguage(lang.id)} className="text-slate-400 hover:text-rose-500 cursor-pointer">
+                    <button onClick={() => removeLanguage(lang.id)} className="text-slate-400 hover:text-rose-500 cursor-pointer hidden sm:block">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   )}
@@ -436,7 +444,7 @@ export function CreateResumePage() {
         </div>
 
         {/* Skills */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
           {sectionHeader('Habilidades Técnicas', <FileText className="w-4 h-4 text-slate-600" />, 'skills')}
           {!collapsed['skills'] && (
             <div className="mt-4">

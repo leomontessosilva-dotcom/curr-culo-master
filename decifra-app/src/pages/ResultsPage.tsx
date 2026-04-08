@@ -163,7 +163,7 @@ export function ResultsPage() {
         {/* Left Sidebar — Scores */}
         <div className="lg:col-span-4 space-y-6">
           {/* Visual Score */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
             <div className="flex items-center gap-2 mb-4">
               <Eye className="w-5 h-5 text-slate-600" />
               <h3 className="text-sm font-semibold text-slate-700">Leitura Visual ATS</h3>
@@ -189,7 +189,7 @@ export function ResultsPage() {
           </div>
 
           {/* Affinity Score */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
             <div className="flex items-center gap-2 mb-4">
               <Target className="w-5 h-5 text-slate-600" />
               <h3 className="text-sm font-semibold text-slate-700">Afinidade com a Vaga</h3>
@@ -226,7 +226,7 @@ export function ResultsPage() {
         <div className="lg:col-span-8 space-y-6">
           {/* Insights */}
           {!optimized && (
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
               <h3 className="text-sm font-semibold text-slate-700 mb-4">
                 Diagnóstico Detalhado
               </h3>
@@ -280,7 +280,7 @@ export function ResultsPage() {
 
           {/* Optimization Progress */}
           {optimizing && (
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
               <h3 className="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2">
                 <Loader2 className="w-4 h-4 animate-spin text-slate-900" />
                 Otimizando currículo...
@@ -306,7 +306,7 @@ export function ResultsPage() {
 
           {/* Optimized Resume Preview */}
           {optimized && (
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-semibold text-slate-700 flex items-center gap-2">
                   <FileText className="w-4 h-4" />

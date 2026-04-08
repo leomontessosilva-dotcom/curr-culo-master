@@ -164,7 +164,7 @@ export function CreatePostPage() {
       {activeTab === 'create' && (
         <div className="space-y-6">
           {/* Topic */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
             <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-3">
               <Lightbulb className="w-4 h-4 text-slate-600" />
               Sobre o que você quer falar? *
@@ -180,7 +180,7 @@ export function CreatePostPage() {
           </div>
 
           {/* Goal */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
             <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-3">
               <Target className="w-4 h-4 text-slate-600" />
               Qual o objetivo desse post?
@@ -203,7 +203,7 @@ export function CreatePostPage() {
           </div>
 
           {/* Audience */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
             <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-3">
               <Users className="w-4 h-4 text-slate-600" />
               Quem é seu público-alvo?
@@ -218,7 +218,7 @@ export function CreatePostPage() {
           </div>
 
           {/* Tone & Format */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-3">
@@ -246,7 +246,7 @@ export function CreatePostPage() {
           </div>
 
           {/* Reference Post */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
             <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-3">
               <FileText className="w-4 h-4 text-slate-600" />
               Post de referência (opcional)
@@ -262,7 +262,7 @@ export function CreatePostPage() {
           </div>
 
           {/* Advanced Options */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
             <button
               type="button"
               onClick={() => toggle('advanced')}
@@ -352,14 +352,14 @@ export function CreatePostPage() {
                   {/* Header */}
                   <button
                     onClick={() => setExpandedId(expandedId === post.id ? null : post.id)}
-                    className="w-full px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 transition-colors"
+                    className="w-full px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 transition-colors"
                   >
                     <div className="text-left flex-1 min-w-0">
                       <p className="text-sm font-semibold text-slate-800 truncate">{post.topic}</p>
                       <p className="text-xs text-slate-400 mt-0.5">{formatDate(post.created_at)}</p>
                     </div>
                     <div className="flex items-center gap-2 ml-4">
-                      <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{post.post_content.length} chars</span>
+                      <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full hidden sm:block">{post.post_content.length} chars</span>
                       {expandedId === post.id ? (
                         <ChevronUp className="w-4 h-4 text-slate-400" />
                       ) : (
@@ -370,8 +370,8 @@ export function CreatePostPage() {
 
                   {/* Expanded Content */}
                   {expandedId === post.id && (
-                    <div className="px-6 pb-5 border-t border-slate-100">
-                      <div className="bg-slate-50 rounded-xl p-4 mt-4 border border-slate-100">
+                    <div className="px-4 sm:px-6 pb-4 sm:pb-5 border-t border-slate-100">
+                      <div className="bg-slate-50 rounded-xl p-3 sm:p-4 mt-3 sm:mt-4 border border-slate-100">
                         <pre className="text-sm text-slate-800 whitespace-pre-wrap font-sans leading-relaxed">
                           {post.post_content}
                         </pre>

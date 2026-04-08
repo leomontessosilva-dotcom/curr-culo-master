@@ -266,7 +266,7 @@ export function LoginPage() {
 
   const otpInput = () => (
     <div>
-      <div className="flex gap-1.5 justify-center mb-6" onPaste={handleOtpPaste}>
+      <div className="flex gap-1 sm:gap-1.5 justify-center mb-6" onPaste={handleOtpPaste}>
         {otp.map((digit, i) => (
           <input
             key={i}
@@ -277,7 +277,7 @@ export function LoginPage() {
             value={digit}
             onChange={(e) => handleOtpChange(i, e.target.value)}
             onKeyDown={(e) => handleOtpKeyDown(i, e)}
-            className="w-10 h-12 text-center text-lg font-semibold rounded-lg border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+            className="w-9 h-11 sm:w-10 sm:h-12 text-center text-lg font-semibold rounded-lg border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
           />
         ))}
       </div>
@@ -337,7 +337,7 @@ export function LoginPage() {
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
           {/* Back button for sub-views */}
           {view !== 'login' && view !== 'signup' && (
             <button
