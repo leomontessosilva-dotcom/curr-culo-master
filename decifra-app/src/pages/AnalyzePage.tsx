@@ -77,7 +77,7 @@ export function AnalyzePage() {
 
       <div className="space-y-6">
         {/* ATS Selector */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
           <label className="block text-sm font-medium text-slate-700 mb-3">
             <Search className="w-4 h-4 inline mr-1.5 -mt-0.5" />
             Plataforma ATS de destino
@@ -100,7 +100,7 @@ export function AnalyzePage() {
         </div>
 
         {/* Job Description */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
           <label className="block text-sm font-medium text-slate-700 mb-3">
             <FileText className="w-4 h-4 inline mr-1.5 -mt-0.5" />
             Descrição da Vaga
@@ -120,7 +120,7 @@ export function AnalyzePage() {
         </div>
 
         {/* PDF Upload */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
           <label className="block text-sm font-medium text-slate-700 mb-3">
             <Upload className="w-4 h-4 inline mr-1.5 -mt-0.5" />
             Seu Currículo (PDF)
@@ -156,7 +156,7 @@ export function AnalyzePage() {
               }}
               onDragLeave={() => setDragOver(false)}
               onDrop={handleDrop}
-              className={`border-2 border-dashed rounded-2xl p-12 text-center transition-all cursor-pointer ${
+              className={`border-2 border-dashed rounded-2xl p-8 sm:p-12 text-center transition-all cursor-pointer ${
                 dragOver
                   ? 'border-slate-900 bg-slate-100'
                   : 'border-slate-300 hover:border-slate-600 hover:bg-slate-50'

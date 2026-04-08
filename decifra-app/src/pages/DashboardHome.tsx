@@ -22,7 +22,7 @@ export function DashboardHome() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
         <div
           onClick={() => navigate('/dashboard/analyze')}
-          className="bg-gradient-to-br from-slate-900 to-black rounded-2xl p-8 text-white cursor-pointer hover:from-black hover:to-slate-900 transition-all shadow-xl shadow-slate-300"
+          className="bg-gradient-to-br from-slate-900 to-black rounded-2xl p-5 sm:p-8 text-white cursor-pointer hover:from-black hover:to-slate-900 transition-all shadow-xl shadow-slate-300"
         >
           <div className="flex items-center gap-4">
             <div className="bg-white/20 rounded-xl p-3">
@@ -39,7 +39,7 @@ export function DashboardHome() {
 
         <div
           onClick={() => navigate('/dashboard/create')}
-          className="bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-2xl p-8 text-white cursor-pointer hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-xl shadow-emerald-200"
+          className="bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-2xl p-5 sm:p-8 text-white cursor-pointer hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-xl shadow-emerald-200"
         >
           <div className="flex items-center gap-4">
             <div className="bg-white/20 rounded-xl p-3">
@@ -56,7 +56,7 @@ export function DashboardHome() {
 
         <div
           onClick={() => navigate('/dashboard/post')}
-          className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-8 text-white cursor-pointer hover:from-blue-700 hover:to-blue-800 transition-all shadow-xl shadow-blue-200"
+          className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-5 sm:p-8 text-white cursor-pointer hover:from-blue-700 hover:to-blue-800 transition-all shadow-xl shadow-blue-200"
         >
           <div className="flex items-center gap-4">
             <div className="bg-white/20 rounded-xl p-3">
