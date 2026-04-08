@@ -9,6 +9,7 @@ import {
   Lightbulb,
   RefreshCw,
 } from 'lucide-react'
+import { saveLinkedinPost } from '../services/linkedinPosts'
 
 type Step = { label: string; done: boolean }
 
@@ -36,9 +37,11 @@ export function PostResultPage() {
   const [copied, setCopied] = useState(false)
   const [regenerating, setRegenerating] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
+  const [saved, setSaved] = useState(false)
 
   const generate = async () => {
     if (!input) return
+    setSaved(false)
 
     const animSteps: Step[] = [
       { label: 'Analisando tema e público-alvo...', done: false },
@@ -67,8 +70,24 @@ export function PostResultPage() {
       }
 
       const result = await response.json()
-      setPost(result.post || '')
-      setTips(result.tips || [])
+      const postContent = result.post || ''
+      const postTips = result.tips || []
+      setPost(postContent)
+      setTips(postTips)
+
+      // Auto-save to Supabase
+      if (postContent) {
+        const { error: saveErr } = await saveLinkedinPost({
+          topic: input.topic,
+          goal: input.goal,
+          audience: input.audience,
+          tone: input.tone,
+          format: input.format,
+          post_content: postContent,
+          tips: postTips,
+        })
+        if (!saveErr) setSaved(true)
+      }
     } catch {
       setError('Erro ao gerar o post. Tente novamente.')
     }
@@ -154,9 +173,17 @@ export function PostResultPage() {
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-semibold text-slate-700">Preview do Post</h3>
-              <span className="text-xs bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full font-medium">
-                LinkedIn Ready
-              </span>
+              <div className="flex items-center gap-2">
+                {saved && (
+                  <span className="text-xs bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-medium flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" />
+                    Salvo no histórico
+                  </span>
+                )}
+                <span className="text-xs bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full font-medium">
+                  LinkedIn Ready
+                </span>
+              </div>
             </div>
             <div className="bg-slate-50 rounded-xl p-5 border border-slate-100">
               <pre className="text-sm text-slate-800 whitespace-pre-wrap font-sans leading-relaxed">
